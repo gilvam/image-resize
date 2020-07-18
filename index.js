@@ -1,7 +1,7 @@
 const max = {
 	image: 3.6 * 1000000, // 3.6mb to bytes
-	big: 1920, // lado maior
-	small: 1080, // lado menor
+	big: 10000, // lado maior
+	small: 7080, // lado menor
 }
 let img = document.getElementById('image');
 let imgResponse = document.getElementById('image-result');
@@ -40,7 +40,7 @@ const getBigAndSmallPx = (width, height) => {
  * @returns {number}
  */
 const getPxPercentage = (px, percentage) => {
-	return Math.floor(px * 100 / percentage);
+	return Math.round(px * 100 / percentage) + 1;
 }
 
 /**
@@ -50,8 +50,8 @@ const getPxPercentage = (px, percentage) => {
  * @returns {{pxBig: number, pxSmall: number}}
  */
 const getPxResize = (pxBig, pxSmall) => {
-	const percentageBig = Math.floor((pxBig * 100) / max.big);
-	const percentageSmall = Math.floor((pxSmall * 100) / max.small);
+	const percentageBig = Math.round((pxBig * 100) / max.big) + 1;
+	const percentageSmall = Math.round((pxSmall * 100) / max.small) + 1;
 
 	if (percentageBig > percentageSmall) { // faz redução da imagem de acordo com a porcentagem maior
 		pxBig = getPxPercentage(pxBig, percentageBig);
@@ -116,7 +116,7 @@ const compress = (file, quality, pxBig = 0, pxSmall = 0) => {
 	fileReader.readAsDataURL(file);
 	fileReader.onload = (event) => {
 		img.src = event.target.result;
-		const percentage = Math.floor((event.total * 100) / max.image);
+		const percentage = Math.round((event.total * 100) / max.image) + 1;
 
 		(img.onload = () => {
 			let width, height;
@@ -131,8 +131,9 @@ const compress = (file, quality, pxBig = 0, pxSmall = 0) => {
 					' | inicial: ', getBigAndSmallPx(img.naturalWidth, img.naturalHeight),
 				);
 			} else {
-				width = img.naturalWidth;
-				height = img.naturalHeight;
+				const reducePercentage = 95; //porcentagem a ser usada no tamanho da imagem
+				width = Number(Math.round((img.naturalWidth * reducePercentage) / 100).toFixed(0)); // in 90%
+				height = Number(Math.round((img.naturalHeight * reducePercentage) / 100).toFixed(0)); // in 90%
 
 				console.log(
 					`* ARQUIVO | percentage: ${percentage}%`,
