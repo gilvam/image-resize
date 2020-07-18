@@ -1,7 +1,7 @@
 const max = {
 	image: 3.6 * 1000000, // 3.6mb to bytes
-	big: 10000, // lado maior
-	small: 7080, // lado menor
+	big: 1920, // lado maior
+	small: 1080, // lado menor
 }
 let img = document.getElementById('image');
 let imgResponse = document.getElementById('image-result');
